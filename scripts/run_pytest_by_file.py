@@ -10,7 +10,7 @@ from utils.test_utils import animation_worker, clear_pytest_cache
 
 # 定義 slowmo 參數和目標測試位置
 SLOWMO_VALUE = 500
-DEFAULT_ROOT_DIR = r"C:\Users\User\PycharmProjects\artemis-qa\tests"
+DEFAULT_ROOT_DIR = r"C:\Users\User\PycharmProjects\uystore-qa\tests"
 DEFAULT_TIMEOUT = 20000  # 預設超時時間（毫秒）
 
 # 設置日誌
