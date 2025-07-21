@@ -4,7 +4,7 @@ import json
 import re
 from playwright.sync_api import sync_playwright, Page, expect
 
-from config.constants import SeSA_Coin_Laundry_Lee_Funeral_Store, SeSA_STORE_INFO_API
+from config.constants import SeSA_Coin_Laundry_Lee_Funeral_Store, TIMEOUT_5_SEC
 
 # 設置日誌（無變化）
 logger = logging.getLogger(__name__)
@@ -85,7 +85,7 @@ def test_store_info_api(browser_page: Page):
     browser_page.on("response", handle_response)
     # 重新載入頁面觸發請求
     browser_page.reload()
-    browser_page.wait_for_timeout(5000)  # 等待 5 秒讓請求發生
+    browser_page.wait_for_timeout(TIMEOUT_5_SEC)
 
     if api_response[0]:
         data = api_response[0].json()
