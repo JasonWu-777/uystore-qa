@@ -73,41 +73,25 @@ def test_store_info_api(browser_page: Page):
     # 新增調試：截圖和 print 內容
     logger.info(f"頁面內容片段: {browser_page.content()[:500]}...")  # 只 print 前 500 字，避免太長
 
-    # 修正：使用 wait_for_response 攔截 API（確保在 goto 後等待）
+    # 使用 on(response) 監聽 API 回應（更穩健的方法）
     data = None
-    try:
-        # 等待特定 API 回應（修正錯誤：確認 page 有 wait_for_response）
-        api_response = browser_page.wait_for_response(
-            lambda resp: "根據_storeName_取得所有_uyMachine" in resp.url and resp.status == 200,
-            timeout=15000  # 15秒等待
-        )
-        if api_response:
-            logger.info(f"攔截到 API: {api_response.url}")
-            data = api_response.json()
-    except AttributeError as e:
-        logger.error(f"wait_for_response 錯誤: {e} - 可能 Playwright 版本問題，請升級")
-    except Exception as e:
-        logger.error(f"等待 API 失敗: {e}")
+    logger.info("使用 on(response) 監聽 API 回應")
+    api_response = [None]  # 用 list 避免 nonlocal 問題
+    def handle_response(resp):
+        if "getStoreInfo" in resp.url and resp.status == 200:
+            api_response[0] = resp
+            logger.info(f"監聽到 API: {resp.url}")
 
-    # 如果沒攔截到，fallback 到監聽 response（更穩健）
-    if not data:
-        logger.info("wait_for_response 失敗，改用 on(response) 監聽")
-        api_response = [None]  # 用 list 避免 nonlocal 問題
-        def handle_response(resp):
-            if "根據_storeName_取得所有_uyMachine" in resp.url and resp.status == 200:
-                api_response[0] = resp
-                logger.info(f"監聽到 API: {resp.url}")
+    browser_page.on("response", handle_response)
+    # 重新載入頁面觸發請求
+    browser_page.reload()
+    browser_page.wait_for_timeout(5000)  # 等待 5 秒讓請求發生
 
-        browser_page.on("response", handle_response)
-        # 重新載入頁面觸發請求
-        browser_page.reload()
-        browser_page.wait_for_timeout(5000)  # 等待 5 秒讓請求發生
-
-        if api_response[0]:
-            data = api_response[0].json()
-        else:
-            logger.info("仍未攔截到 API，fallback 到頁面提取")
-            data = extract_json_from_html(browser_page)
+    if api_response[0]:
+        data = api_response[0].json()
+    else:
+        logger.info("未攔截到 API，fallback 到頁面提取")
+        data = extract_json_from_html(browser_page)
 
     if not data:
         pytest.fail("無法獲取數據")

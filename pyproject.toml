@@ -1,16 +1,33 @@
 [project]
 name = "uystore-qa"
 version = "0.1.0"
-description = ""
+description = "Playwright tests "
 authors = [
     {name = "JasonWu-777",email = "pengyueh.wu@upyoung.com.tw"}
 ]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
 ]
 
 
+[tool.poetry.dependencies]
+python = "^3.11"
+playwright = "^1.50.0"
+pytest = "^7.4.2"
+pytest-playwright = "^0.7.0"
+pluggy = "^1.0.0"
+psutil = "^7.0.0"
+
+[tool.poetry.group.dev.dependencies]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.pytest.ini_options]
+#asyncio_mode = "auto"
+
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
