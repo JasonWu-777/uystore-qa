@@ -1,0 +1,16 @@
+[project]
+name = "uystore-qa"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "JasonWu-777",email = "pengyueh.wu@upyoung.com.tw"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
